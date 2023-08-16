@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop:disable Metrics/BlockLength
 
 RSpec.describe JpLocalGov::Base do
   describe "#jp_local_gov" do
@@ -46,4 +45,3 @@ RSpec.describe JpLocalGov::Base do
   end
 end
 
-# rubocop:enable Metrics/BlockLength
