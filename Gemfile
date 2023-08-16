@@ -14,8 +14,6 @@ group :development do
   gem "rbs"
   gem "rubocop"
   gem "rubocop-fjord"
-  gem "rubocop-rake"
-  gem "rubocop-rspec"
   gem "sqlite3"
   gem "steep"
 end

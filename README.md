@@ -4,21 +4,9 @@
 
 # JpLocalGov
 
-Convert local government code based on JIS X 0402 to local government name in Japan.  
+Convert local government code based on JIS X 0402 to local government name in UK-Japan.  
 Reference(Japanese): [全国地方公共団体コード \- Wikipedia](https://ja.wikipedia.org/wiki/%E5%85%A8%E5%9B%BD%E5%9C%B0%E6%96%B9%E5%85%AC%E5%85%B1%E5%9B%A3%E4%BD%93%E3%82%B3%E3%83%BC%E3%83%89)
 
-### Issues
-
-If you find any bugs or concerns, or have suggestions for new features, please feel free to add them as an [GitHub Issue](https://github.com/IkumaTadokoro/jp_local_gov/issues/new/choose)!
-
-There are issue templates for bug and feature. If neither, please use the blank template.
-
-### Special Thanks
-
-This gem is based on and inspired by [chocoby/jp_prefecture](https://github.com/chocoby/jp_prefecture).   
-And I referenced [kufu/jpostcode-data](https://github.com/kufu/jpostcode-data) for the method of data acquisition.
-
-Thanks!😁
 
 ## Installation
 
@@ -77,7 +65,7 @@ This search function is an exact match search.
 
 ```ruby
 misato = JpLocalGov.where(city: "美郷町")
-# => [#<JpLocalGov::LocalGov:0x00007fb1c594cb08 @code="054348", @prefecture_code="05", @prefecture="秋田県", @prefecture_kana="アキタケン", @city="美郷町", @city_kana="ミサトチョウ", @prefecture_capital=false>, #<JpLocalGov::LocalGov:8 @code="324485", @prefecture_code="32", @prefecture="島根県", @prefecture_kana="シマネケン", @city="美郷町", @city_kana="ミサトチョウ", @prefecture_capital=false>, #<JpLocalGov::LocalGov:0x00007fb1c1a3ce40 @code="454311", @prefecture="宮崎県", @prefecture_kana="ミヤザキケン", @city="美郷町", @city_kana="ミサトチョウ", @prefecture_capital=false>]
+
 misato.map { "#{_1.prefecture}:#{_1.city}" }
 # => ["秋田県:美郷町", "島根県:美郷町", "宮崎県:美郷町"]
 
@@ -101,43 +89,14 @@ The following attributes can be specified for the condition.
 | city_kana          | String        | "チヨダク"   |
 | prefecture_capital | true or false | false    |
 
-### All data
-
-You can get all local governments using `JpLocalGov.all`
-
-```ruby
-JpLocalGov.all
-# =>  [#<JpLocalGov::LocalGov:0x00007fdf3a9c6758 @code="011002", @prefecture_code="01", @prefecture="北海道", @prefecture_kana="ホッカイドウ", @city="札幌市na="サッポロシ", @prefecture_capital=true>, #<JpLocalGov::LocalGov:0x00007fdf3a9c6730 @code="011011",...
+:LocalGov:0x00007fdf3a9c6758 @code="011002", @prefecture_code="01", @prefecture="北海道", @prefecture_kana="ホッカイドウ", @city="札幌市na="サッポロシ", @prefecture_capital=true>, #<JpLocalGov::LocalGov:0x00007fdf3a9c6730 @code="011011",...
 ```
-
-### Random data
-
-You can create random `code`, `city`, `city_kana`, `prefecture`, `prefecture_code` and `prefecture_kana` by using `JpLocalGov::Random`.
-
-```ruby
-JpLocalGov::Random.code
-# => "281077"
-JpLocalGov::Random.city
-# => "大島町"
-JpLocalGov::Random.city_kana
-# => "チュウオウシ"
-JpLocalGov::Random.prefecture
-# => "青森県"
-JpLocalGov::Random.prefecture_code
-# => "46"
-JpLocalGov::Random.prefecture_kana
-# => "ヒョウゴケン"
-```
-
-It is useful to random factory data in rails app for example.
 
 ### Usage on Rails (ActiveRecord)
 
 Include JpLocalGov to Model which ActiveRecord::Base inherited.
 
 ```ruby
-# app/models/insurance_fee.rb:
-class InsuranceFee < ActiveRecord::Base
   # local_gov_code:String
 
   include JpLocalGov
@@ -157,42 +116,13 @@ insurance_fee.local_government.city
 In Migration file, set `local_gov_code` column type to `string`.
 
 ```ruby
-class AddLocalGovCodeToInsuranceFees < ActiveRecord::Migration
+
   def change
     add_column :insurance_fees, :local_gov_code, :string
   end
 end
 ```
 
-### Validation
-
-You can use `JpLocalGov.valid_code?(local_gov_code)` in `validate` method.
-
-```ruby
-class InsuranceFee < ApplicationRecord
-  include JpLocalGov
-  jp_local_gov :local_gov_code
-
-  validate :valid_code?
-
-  def valid_code?
-    unless JpLocalGov.valid_code?(local_gov_code)
-      errors.add(:local_gov_code, "is not valid code")
-    end
-  end
-end
-```
-
-This method inspect code by [check digits defined in JISX0402](https://www.soumu.go.jp/main_content/000137948.pdf).
-(And also check code is String.)
-
-### View Template
-
-Use `collection_select` to generate selector in view:
-
-```ruby
-f.collection_select :local_gov_code, JpLocalGov.all, :code, :city # e.g. code: 131016, city: "千代田区"
-```
 
 ## Development
 
@@ -205,8 +135,6 @@ f.collection_select :local_gov_code, JpLocalGov.all, :code, :city # e.g. code: 1
 5. Push to the branch
 6. Create a new Pull Request
 
-### Commands
-
 | Command            | Details                                                                                                  |
 |--------------------|----------------------------------------------------------------------------------------------------------|
 | `bin/console`      | An interactive prompt that will allow you to experiment                                                  |
@@ -215,68 +143,10 @@ f.collection_select :local_gov_code, JpLocalGov.all, :code, :city # e.g. code: 1
 | `bin/lint`         | Run Rubocop                                                                                              |
 | `bin/steep`        | Run `steep stats` and `steep check`                                                                      |
 
-### Running Test via JetBrains IDE (e.g. RubyMine)
-
-This gem use 'Appraisal' to inspect several versions of Rails.
-
-So you should run rspec by `bundle exec appraisal rspec` and you won't be able to run spec via IDE (only run via your
-terminal).
-
-If you use JetBrains IDE and you want to run spec via IDE, try to configure the following steps.
-
-1. Open 「Edit Configurations...」
-2. Open 「Edit Configuration templates...」
-3. Select 「RSpec」
-4. Check 「Use custom RSpec runner script:」 and fill the script with `[CLONE_DIR]/bin/spec_runner.rb`
-5. Click「APPLY」, then you can run spec via IDE!!🎉
-
-If you have already run spec via IDE before configuration, delete the existing configuration and try to configure the
-above steps
-
-## Update local government data
-
-This Gem update local government data (format: JSON) automatically once a month by [GitHub Actions](https://github.com/IkumaTadokoro/jp_local_gov/actions/workflows/auto-update.yml).
-
-- Data source: https://www.soumu.go.jp/denshijiti/code.html
-- Output: https://github.com/IkumaTadokoro/jp_local_gov/tree/main/data/json
-
-Fetch script is written in Ruby and Rake Task. So you can run update data at local by the following command.
-
-```ruby
-bundle exec rake jp_local_gov:data:update_all
-```
-
-## Contributing
-
-Bug reports and pull requests are welcome on GitHub at https://github.com/IkumaTadokoro/jp_local_gov. This project is
-intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to
-the [code of conduct](https://github.com/IkumaTadokoro/jp_local_gov/blob/main/CODE_OF_CONDUCT.md).
-
-### Spell Checking
-
-We are running [misspell](https://github.com/client9/misspell) which is mainly written in
-[Golang](https://golang.org/) to check spelling with [GitHub Actions](../.github/workflows/spell-checking.yml). Correct
-commonly misspelled English words quickly with `misspell`. `misspell` is different from most other spell checkers
-because it doesn't use a custom dictionary. You can run `misspell` locally against all files with:
-
-    $ find . -type f | xargs ./misspell -error
-
-Notable `misspell` help options or flags are:
-
-* `-i` string: ignore the following corrections, comma separated
-* `-w`: Overwrite file with corrections (default is just to display)
-
-We also run [codespell](https://github.com/codespell-project/codespell) with GitHub Actions to check spelling and
-[codespell](https://pypi.org/project/codespell/) runs against a [small custom dictionary](../codespell.txt).
-`codespell` is written in [Python](https://www.python.org/) and you can run it with:
-
-    $ codespell --ignore-words=codespell.txt
-
 ## License
 
 The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
 
 ## Code of Conduct
 
-Everyone interacting in the JpLocalGov project's codebases, issue trackers, chat rooms and mailing lists is expected to
-follow the [code of conduct](https://github.com/IkumaTadokoro/jp_local_gov/blob/main/CODE_OF_CONDUCT.md).
+King Kyle Williams

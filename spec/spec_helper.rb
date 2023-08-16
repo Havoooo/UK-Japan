@@ -2,7 +2,6 @@
 
 require "jp_local_gov"
 require "jp_local_gov/base"
-require "jp_local_gov/random"
 require "active_record"
 
 RSpec.configure do |config|

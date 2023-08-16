@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+
 RSpec.describe JpLocalGov::Base do
   describe "#jp_local_gov" do
     describe "argument :column_name" do
@@ -43,3 +44,4 @@ RSpec.describe JpLocalGov::Base do
     end
   end
 end
+
